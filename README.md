@@ -237,7 +237,7 @@ let model = HandyJsonUtil.jsonToModel(jsonString, GoodsInfoModel.self) as! Goods
 modelList.append(model)
 }
 ```
-## #4 RxNetworks(基于Moya+HandyJSON+RxSwift封装的网络请求 JSON解析响应式编程框架)
+## #3 RxNetworks(基于Moya+HandyJSON+RxSwift封装的网络请求 JSON解析响应式编程框架)
 
 ### 以查询XXapi为例
 
@@ -294,7 +294,7 @@ api.url = "http://xxx.xxx.xxx.xxx:xxxx/xxxxxx?"
 ### 设置请求参数
 
 ```swift
-api.parameters = ["userId": 118]
+api.parameters = ["xxx": xxx]
 ```
 
 ### 设置参数类型(如果后台请求参数需要JSON格式，则api.parametersType = .json, 否则api.parametersType = .queryString（默认）)
