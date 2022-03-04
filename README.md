@@ -237,3 +237,94 @@ let model = HandyJsonUtil.jsonToModel(jsonString, GoodsInfoModel.self) as! Goods
 modelList.append(model)
 }
 ```
+## #4 RxNetworks(基于Moya+HandyJSON+RxSwift封装的网络请求 JSON解析响应式编程框架)
+
+### 以查询XXapi为例
+
+```swift
+let disposeBag = DisposeBag()    
+
+func searchAllDevice() {
+        var api = NetworkAPIManager.init()
+        api.url = "http://xxx.xxx.xxx.xxx:xxxx/xxxxxx?"
+        api.parameters = ["XXXX": xxx]
+        api.method = .get
+        api.plugins = [NetworkLoadingPlugin.init()]
+        api.request()
+            .asObservable()
+            .observe(on: MainScheduler.instance)
+            .subscribe { (successResponse) in
+                print("\(successResponse)")
+                let jsonContent: Dictionary<String, AnyObject> = successResponse as! Dictionary<String, AnyObject>
+                let resultList = jsonContent["data"] as? [[String: AnyObject]]
+                var modelList: [DeviceInfoModel] = []
+                guard let count = resultList?.count else { return }
+                guard let dicList = resultList else { return }
+                for index in 0..<count {
+                    print(dicList[index])
+                    let jsonString = ConvertUtility.convertDictionaryToString(dict: dicList[index])
+                    let model = HandyJsonUtil.jsonToModel(jsonString, DeviceInfoModel.self) as! DeviceInfoModel
+                    modelList.append(model)
+                }
+            } onError: { (error) in
+                print("Network failed: \(error.localizedDescription)")
+            }
+            .disposed(by: disposeBag)
+    }
+```
+
+### 定义disposeBag
+
+```swift
+let disposeBag = DisposeBag()    
+```
+
+### 初始化api对象
+
+```swift
+var api = NetworkAPIManager.init()
+```
+
+### 设置url
+
+```swift
+api.url = "http://xxx.xxx.xxx.xxx:xxxx/xxxxxx?"
+```
+
+### 设置请求参数
+
+```swift
+api.parameters = ["userId": 118]
+```
+
+### 设置参数类型(如果后台请求参数需要JSON格式，则api.parametersType = .json, 否则api.parametersType = .queryString（默认）)
+
+```swift
+api.parametersType = .queryString
+```
+
+### 设置请求方式
+
+```swift
+api.method = .get
+```
+
+### 设置所需插件
+
+```swift
+api.plugins = [NetworkLoadingPlugin.init()]
+```
+
+### 发起请求
+
+```swift
+api.request()
+            .asObservable()
+            .observe(on: MainScheduler.instance)
+            .subscribe { (successResponse) in
+                 print("success")
+            } onError: { (error) in
+                print("Network failed: \(error.localizedDescription)")
+            }
+            .disposed(by: disposeBag)
+```
