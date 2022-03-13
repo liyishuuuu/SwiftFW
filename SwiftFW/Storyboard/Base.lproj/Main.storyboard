@@ -45,11 +45,11 @@
             </objects>
             <point key="canvasLocation" x="84" y="84"/>
         </scene>
-        <!--HDCam-->
+        <!--美团-->
         <scene sceneID="Ik6-Eg-ZUJ">
             <objects>
                 <navigationController id="Uhe-1m-0RT" customClass="HomeNavigationController" customModule="SwiftFW" customModuleProvider="target" sceneMemberID="viewController">
-                    <tabBarItem key="tabBarItem" title="HDCam" image="home_normal" landscapeImage="home_normal" selectedImage="home_selected_red" id="Xds-UM-taC">
+                    <tabBarItem key="tabBarItem" title="美团" image="home_normal" landscapeImage="home_normal" selectedImage="home_selected_red" id="Xds-UM-taC">
                         <color key="badgeColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                     </tabBarItem>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" id="Ubn-F4-jHP">

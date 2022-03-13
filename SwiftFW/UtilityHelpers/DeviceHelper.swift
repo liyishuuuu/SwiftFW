@@ -1,6 +1,6 @@
 //
 //  DeviceHelper.swift
-//  HDCam
+//  SwiftFW
 //
 //  Created by liyishu on 2021/12/30.
 //

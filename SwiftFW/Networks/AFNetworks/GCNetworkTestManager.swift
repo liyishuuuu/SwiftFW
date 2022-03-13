@@ -1,6 +1,6 @@
 //
 //  GCNetworkTestManager.swift
-//  GoodCam
+//  SwiftFW
 //
 //  Created by liyishu on 2021/11/19.
 //
