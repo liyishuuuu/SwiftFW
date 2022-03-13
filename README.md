@@ -327,3 +327,231 @@ api.request()
             }
             .disposed(by: disposeBag)
 ```
+
+
+
+# 开发框架设计
+
+## #1 MVP
+
+### 视图层 (V)
+
+```swift
+class TestMVPViewController: UIViewController {
+    
+    /** 定义一个presenter，实例化 */
+    private let presenter = TestMVPPresenter()
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        
+        // 添加v和p层的绑定
+        self.presenter.attachView(viewDelegate: self)
+        
+        // 调用p层方法
+        self.presenter.testMVP()
+    }
+}
+```
+
+
+
+### presenter (P)
+
+```swift
+class TestMVPPresenter: NSObject {
+    // 代理
+    private var testMVPProtocol: TestMVPProtocol?
+
+    // MARK: - attach/detach methods
+
+    func testMVP() {
+        testMVPProtocol?.testMVPCallback()
+    }
+    
+    // 绑定V和P
+    func attachView(viewDelegate: TestMVPProtocol) {
+        self.testMVPProtocol = viewDelegate
+    }
+
+    // 解除绑定
+    func detachView()  {
+        self.testMVPProtocol = nil
+    }
+}
+```
+
+
+
+### Model (M)
+
+```swift
+import UIKit
+
+class TestModel: BaseModel {
+     var id: String?
+}
+```
+
+
+
+### Protocol
+
+```swift
+protocol TestMVPProtocol: NSObject {
+    func testMVPCallback()
+}
+```
+
+
+
+### Service
+
+```swift
+class XXXService: BaseService {
+    
+    static let shared = { XXXService() }()
+    
+    internal func xxx(success: @escaping ([YouxuanModel]) -> (), failure: @escaping (String) -> ()) {
+        APIProvider.rx.request(api: XXXAPI())
+            .asObservable()
+            .subscribe { (successResponse) in
+                print("\(successResponse)")
+                        
+                }
+                success(modelList)
+            } onError: { (error) in
+                failure(error.localizedDescription)
+            }
+            .disposed(by: disposeBag)
+    }
+}
+
+```
+
+
+
+### 视图层实现代理的回调方法
+
+```swift
+extension TestMVPViewController: TestMVPProtocol {
+    func testMVPCallback() {
+    	//MARK: TODO
+    }
+}
+```
+
+
+
+## #2 MVVM
+
+### 视图层 (V)
+
+```swift
+
+import UIKit
+
+class TestMVVMViewController: BaseRxViewController<TestMVVMViewModel> {
+
+    var datasource: [TestMVVMModel] = []
+   
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        setupBindings()
+    }
+    
+    private func setupBindings() {
+        viewModel.xxxLoad()
+        viewModel.outputs.dataSource.subscribe(onNext: { [weak self] data in
+            self?.datasource = data
+        }).disposed(by: disposeBag)
+    }
+}
+```
+
+
+
+### ViewModel (VM)
+
+```swift
+class MeituanHomeViewModel: BaseViewModel {
+    
+    let dataSource = PublishRelay<[YouxuanModel]>()
+    
+    func xxxLoad() {
+        XXXService.shared.getxxx { (modelList) in
+            self.dataSource.accept(modelList)
+        } failure: { errString in
+            print(errString)
+        }
+    }
+}
+```
+
+
+
+## Model (M)
+
+```swift
+class TestMVVMModel: BaseModel {
+    var id: String?
+}
+```
+
+
+
+### service
+
+```swift
+class XXXService: BaseService {
+    
+    static let shared = { XXXService() }()
+    
+    internal func xxx(success: @escaping ([YouxuanModel]) -> (), failure: @escaping (String) -> ()) {
+        APIProvider.rx.request(api: XXXAPI())
+            .asObservable()
+            .subscribe { (successResponse) in
+                print("\(successResponse)")
+                        
+                }
+                success(modelList)
+            } onError: { (error) in
+                failure(error.localizedDescription)
+            }
+            .disposed(by: disposeBag)
+    }
+}
+```
+
+
+
+### API
+
+```swift
+class XXXAPI: NetworkAPI {
+    var parametersType: ParametersType?
+    
+    var url: APIHost {
+        return "https://meituan.thexxdd.cn"
+    }
+    
+    var path: APIPath {
+        return "/api/forshop/getprefer"
+    }
+    
+    var method: APIMethod {
+        return .get
+    }
+    
+    var parameters: APIParameters? {
+        let params: [String: Any] = [:]
+        return params
+    }
+    
+    var plugins: APIPlugins {
+        let loading = NetworkLoadingPlugin()
+        return [loading]
+    }
+}
+```
+
