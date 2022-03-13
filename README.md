@@ -555,3 +555,94 @@ class XXXAPI: NetworkAPI {
 }
 ```
 
+
+
+## VIPER
+
+视图(V)
+
+```swift
+class TestVIPERViewController: UIViewController {
+
+    // MARK: - Properties
+    var presenter: ViewToPresenterQuotesProtocol?
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        presenter?.viewDidLoad()
+    }
+}
+```
+
+
+
+### Presenter (P)
+
+```swift
+class TestPresenter: ViewToPresenterTestProtocol {
+    
+    // MARK: Properties
+    weak var view: PresenterToViewXXXProtocol?
+    var interactor: PresenterToInteractorXXXProtocol?
+    var router: PresenterToRouterXXXProtocol?
+    
+    // MARK: Inputs from view
+    func viewDidLoad() {
+        print("Presenter is being notified that the View was loaded.")
+        interactor?.loadXXX()
+    }
+}
+```
+
+
+
+### Interactor (I)
+
+```swift
+class XXXInteractor: PresenterToInteractorXXXProtocol {
+    
+    // MARK: Properties
+    weak var presenter: InteractorToPresenterXXXProtocol?
+    var xxx: [XXX]?
+    
+    func loadQuotes() {
+        print("Interactor receives the request from Presenter to load XXX from the server.")
+        XXXService.shared.getxxx(count: 6, success: { (code, xxx) in
+            self.xxx = xxx
+            self.presenter?.fetchQuotesSuccess(xxx: xxx)
+        }) { (code) in
+            self.presenter?.fetchQuotesFailure(errorCode: code)
+        }
+    }
+}
+
+```
+
+
+
+### Entity (E)
+
+```swift
+class XXX: BaseModel {
+    var id: String?
+}
+```
+
+
+
+### Router (R)
+
+```swift
+class XXXRouter: PresenterToRouterXXXProtocol {
+    
+    // MARK: - Navigation
+    func pushToNextPage(on view: PresenterToViewXXXProtocol, with quote: Quote) {
+        print("QuotesRouter is instructed to push QuoteDetailViewController onto the navigation stack.")
+        let nextPageViewController = NextPageRouter.createModule(with: quote)
+        let viewController = view as! TestVIPERViewController
+        viewController.navigationController?.pushViewController(nextPageViewController, animated: true)
+    }
+}
+
+```
+
