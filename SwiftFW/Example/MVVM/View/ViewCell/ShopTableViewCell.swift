@@ -2,7 +2,7 @@
 //  ShopTableViewCell.swift
 //  SwiftFW
 //
-//  Created by 赵耿怀 on 2022/2/24.
+//  Created by liyishu on 2022/2/24.
 //
 
 import UIKit

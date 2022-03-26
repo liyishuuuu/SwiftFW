@@ -12,7 +12,7 @@ import UIKit
 struct GCAPIURL {
     
     // 微信支付后台APIurl
-    static let wxPayUrl = "https://www.cypush.com/v3/appPay"
+    static let wxPayUrl = "xxxx"
     // 查询所有设备APIUrl
-    static let searchAllDeviceUrl = "http://120.78.197.81:8080/SelectDevicemanager?"
+    static let searchAllDeviceUrl = "xxxx"
 }
